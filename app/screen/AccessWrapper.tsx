@@ -1,15 +1,9 @@
 
 import React, { useCallback, useState } from 'react';
-import {
-  FlatList,
-  SafeAreaView,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
-} from 'react-native';
+import { FlatList, SafeAreaView, StyleSheet, Text, TouchableOpacity, View, Alert } from 'react-native';
 import Animated, { Easing, FadeIn, FadeOut } from 'react-native-reanimated';
 import { ItemAccess } from './ItemAccess'
+
 const AccessWrapper = () => {
   const [arrList, setArrList] = useState(
     [
@@ -56,17 +50,14 @@ const AccessWrapper = () => {
       }
       setArrList(arr);
     } catch (error) {
-      console.log('eee', error);
     }
   }, [arrList]);
 
   const onPressItemHeader = useCallback((item) => {
     try {
       let arr = [...arrList];
-      const findIndex = arr.findIndex((x) => x.id === item.id);
-      if (findIndex > -1) {
-        arr[findIndex].isSelected = false;
-      }
+      const findIndex = arr.findIndex((x) => x.id === item.id)
+      if (findIndex > -1) { arr[findIndex].isSelected = false }
       for (let index = 0; index < arr.sort((a, b) => {
         if (a.indexAdd - b.indexAdd === 0) {
           return a.id - b.id;
@@ -91,30 +82,25 @@ const AccessWrapper = () => {
         extraData={arrList}
         ListHeaderComponent={() => {
           return <View style={styles.headerContainer}>
-              {arrList.sort((a, b) => {
-                if (a.indexAdd - b.indexAdd === 0) {
-                  return a.id - b.id;
-                }
-                return a.indexAdd - b.indexAdd;
-              }).map((item) => {
-                if (item.isSelected) {
-                  return (
-                    <Animated.View
-                      entering={FadeIn.springify().duration(500).easing(Easing.ease)} exiting={FadeOut.springify().easing(Easing.ease)}>
-                      <TouchableOpacity
-                        style={styles.itemHeader}
-                        activeOpacity={0.8}
-                        onPress={() => {
-                          onPressItemHeader(item);
-                        }}>
-                        <Text style={{ textAlign: 'center' }}>{item.name}</Text>
-                      </TouchableOpacity>
-                    </Animated.View>
-                  );
-                }
-                return <View style={{ height: 50, width: 50, borderRadius: 20, borderWidth: 1, margin: 8 }} />
-              })}
-            </View>
+            {arrList.sort((a, b) => {
+              if (a.indexAdd - b.indexAdd === 0) {
+                return a.id - b.id;
+              }
+              return a.indexAdd - b.indexAdd;
+            }).map((item) => {
+              if (item.isSelected) {
+                return (
+                  <Animated.View
+                    entering={FadeIn.springify().duration(500).easing(Easing.ease)} exiting={FadeOut.springify().easing(Easing.ease)}>
+                    <TouchableOpacity style={styles.itemHeader} activeOpacity={0.8} onPress={() => { onPressItemHeader(item) }}>
+                      <Text style={{ textAlign: 'center' }}>{item.name}</Text>
+                    </TouchableOpacity>
+                  </Animated.View>
+                );
+              }
+              return <View style={{ height: 50, width: 50, borderRadius: 20, borderWidth: 1, margin: 8 }} />
+            })}
+          </View>
         }}
         keyExtractor={(item, index) => index.toString()}
         renderItem={({ item }) => {

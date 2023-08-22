@@ -1,10 +1,5 @@
 import React from 'react';
-import {
-  Dimensions,
-  StyleSheet,
-  Text,
-  TouchableOpacity
-} from 'react-native';
+import { Dimensions, StyleSheet, Text, TouchableOpacity } from 'react-native';
 import Animated, { Easing, FadeOutUp, SlideInUp } from 'react-native-reanimated';
 
 interface IItem {
@@ -28,13 +23,13 @@ export const ItemAccess = (props: IProps) => {
 
   return (
     <Animated.View style={styles.container}
-      entering={SlideInUp.duration(200).withInitialValues({ originY: -15, originX: -10 })}
-      exiting={FadeOutUp.duration(200).easing(Easing.bounce)}
+      entering={SlideInUp.duration(200).withInitialValues({ originY: -15, originX: -10 }).easing(Easing.linear)}
+      exiting={FadeOutUp.duration(200).easing(Easing.linear)}
     >
       <Text>GGGWPP</Text>
-      {item.isSelected ? null : <TouchableOpacity style={styles.itemEach} activeOpacity={0.8} onPress={() => {onPress(item) }}>
-          <Text style={{ flex: 1 }}>{item.name}</Text>
-        </TouchableOpacity>
+      {item.isSelected ? null : <TouchableOpacity style={styles.itemEach} activeOpacity={0.8} onPress={() => { onPress(item) }}>
+        <Text style={{ flex: 1 }}>{item.name}</Text>
+      </TouchableOpacity>
       }
     </Animated.View>
   );
