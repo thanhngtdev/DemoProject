@@ -1,134 +1,170 @@
 
-import React, { useCallback, useState } from 'react';
-import { FlatList, SafeAreaView, StyleSheet, Text, TouchableOpacity, View, Alert } from 'react-native';
-import Animated, { Easing, FadeIn, FadeOut } from 'react-native-reanimated';
-import { ItemAccess } from './ItemAccess'
+import React, { useCallback } from 'react';
+import { Image, NativeScrollEvent, Dimensions, StyleSheet, Text, View, Animated } from 'react-native';
+// import Animated from 'react-native-reanimated';
+
+const data = [
+  {
+    image: 'https://img.thedailybeast.com/image/upload/c_crop,d_placeholder_euli9k,h_1440,w_2560,x_0,y_0/dpr_1.5/c_limit,w_1044/fl_lossy,q_auto/v1531451526/180712-Weill--The-Creator-of-Pepe-hero_uionjj',
+    title: 'Test 1 Test 1 Test 1 Test 1 Test 1 Test 1 Test 1',
+    money: '100000VND'
+  },
+  {
+    image: 'https://img.thedailybeast.com/image/upload/c_crop,d_placeholder_euli9k,h_1440,w_2560,x_0,y_0/dpr_1.5/c_limit,w_1044/fl_lossy,q_auto/v1531451526/180712-Weill--The-Creator-of-Pepe-hero_uionjj',
+    title: 'Test 2 Test 1 Test 1 Test 1 Test 1 Test 1 Test 1',
+    money: '100000VND'
+  },
+  {
+    image: 'https://img.thedailybeast.com/image/upload/c_crop,d_placeholder_euli9k,h_1440,w_2560,x_0,y_0/dpr_1.5/c_limit,w_1044/fl_lossy,q_auto/v1531451526/180712-Weill--The-Creator-of-Pepe-hero_uionjj',
+    title: 'Test 3 Test 1 Test 1 Test 1 Test 1 Test 1 Test 1',
+    money: '100000VND'
+  },
+  {
+    image: 'https://img.thedailybeast.com/image/upload/c_crop,d_placeholder_euli9k,h_1440,w_2560,x_0,y_0/dpr_1.5/c_limit,w_1044/fl_lossy,q_auto/v1531451526/180712-Weill--The-Creator-of-Pepe-hero_uionjj',
+    title: 'Test 4 Test 1 Test 1 Test 1 Test 1 Test 1 Test 1',
+    money: '100000VND'
+  },
+  {
+    image: 'https://img.thedailybeast.com/image/upload/c_crop,d_placeholder_euli9k,h_1440,w_2560,x_0,y_0/dpr_1.5/c_limit,w_1044/fl_lossy,q_auto/v1531451526/180712-Weill--The-Creator-of-Pepe-hero_uionjj',
+    title: 'Test 5 Test 1 Test 1 Test 1 Test 1 Test 1 Test 1',
+    money: '100000VND'
+  },
+  {
+    image: 'https://img.thedailybeast.com/image/upload/c_crop,d_placeholder_euli9k,h_1440,w_2560,x_0,y_0/dpr_1.5/c_limit,w_1044/fl_lossy,q_auto/v1531451526/180712-Weill--The-Creator-of-Pepe-hero_uionjj',
+    title: 'Test 6 Test 1 Test 1 Test 1 Test 1 Test 1 Test 1',
+    money: '100000VND'
+  },
+  {
+    image: 'https://img.thedailybeast.com/image/upload/c_crop,d_placeholder_euli9k,h_1440,w_2560,x_0,y_0/dpr_1.5/c_limit,w_1044/fl_lossy,q_auto/v1531451526/180712-Weill--The-Creator-of-Pepe-hero_uionjj',
+    title: 'Test 1 Test 1 Test 1 Test 1 Test 1 Test 1 Test 1',
+    money: '100000VND'
+  },
+  {
+    image: 'https://img.thedailybeast.com/image/upload/c_crop,d_placeholder_euli9k,h_1440,w_2560,x_0,y_0/dpr_1.5/c_limit,w_1044/fl_lossy,q_auto/v1531451526/180712-Weill--The-Creator-of-Pepe-hero_uionjj',
+    title: 'Test 1 Test 1 Test 1 Test 1 Test 1 Test 1 Test 1',
+    money: '100000VND'
+  },
+  {
+    image: 'https://img.thedailybeast.com/image/upload/c_crop,d_placeholder_euli9k,h_1440,w_2560,x_0,y_0/dpr_1.5/c_limit,w_1044/fl_lossy,q_auto/v1531451526/180712-Weill--The-Creator-of-Pepe-hero_uionjj',
+    title: 'Test 1 Test 1 Test 1 Test 1 Test 1 Test 1 Test 1',
+    money: '100000VND'
+  },
+  {
+    image: 'https://img.thedailybeast.com/image/upload/c_crop,d_placeholder_euli9k,h_1440,w_2560,x_0,y_0/dpr_1.5/c_limit,w_1044/fl_lossy,q_auto/v1531451526/180712-Weill--The-Creator-of-Pepe-hero_uionjj',
+    title: 'Test 1 Test 1 Test 1 Test 1 Test 1 Test 1 Test 1',
+    money: '100000VND'
+  },
+  {
+    image: 'https://img.thedailybeast.com/image/upload/c_crop,d_placeholder_euli9k,h_1440,w_2560,x_0,y_0/dpr_1.5/c_limit,w_1044/fl_lossy,q_auto/v1531451526/180712-Weill--The-Creator-of-Pepe-hero_uionjj',
+    title: 'Test 1 Test 1 Test 1 Test 1 Test 1 Test 1 Test 1',
+    money: '100000VND'
+  },
+  {
+    image: 'https://img.thedailybeast.com/image/upload/c_crop,d_placeholder_euli9k,h_1440,w_2560,x_0,y_0/dpr_1.5/c_limit,w_1044/fl_lossy,q_auto/v1531451526/180712-Weill--The-Creator-of-Pepe-hero_uionjj',
+    title: 'Test 1 Test 1 Test 1 Test 1 Test 1 Test 1 Test 1',
+    money: '100000VND'
+  },
+  {
+    image: 'https://img.thedailybeast.com/image/upload/c_crop,d_placeholder_euli9k,h_1440,w_2560,x_0,y_0/dpr_1.5/c_limit,w_1044/fl_lossy,q_auto/v1531451526/180712-Weill--The-Creator-of-Pepe-hero_uionjj',
+    title: 'Test 1 Test 1 Test 1 Test 1 Test 1 Test 1 Test 1',
+    money: '100000VND'
+  },
+  {
+    image: 'https://img.thedailybeast.com/image/upload/c_crop,d_placeholder_euli9k,h_1440,w_2560,x_0,y_0/dpr_1.5/c_limit,w_1044/fl_lossy,q_auto/v1531451526/180712-Weill--The-Creator-of-Pepe-hero_uionjj',
+    title: 'Test 1 Test 1 Test 1 Test 1 Test 1 Test 1 Test 1',
+    money: '100000VND'
+  },
+]
 
 const AccessWrapper = () => {
-  const [arrList, setArrList] = useState(
-    [
-      {
-        id: 1,
-        name: 'test 1',
-        isSelected: false,
-        indexAdd: 10000,
-      },
-      {
-        id: 2,
-        name: 'test 2',
-        isSelected: false,
-        indexAdd: 10000,
-      },
-      {
-        id: 3,
-        name: 'test 3',
-        isSelected: false,
-        indexAdd: 10000,
-      },
-      {
-        id: 4,
-        name: 'test 4',
-        isSelected: false,
-        indexAdd: 10000,
-      },
-      {
-        id: 5,
-        name: 'test 5',
-        isSelected: false,
-        indexAdd: 10000,
-      },
-    ]
-  );
 
-  const handleOnPressItem = useCallback((item) => {
-    try {
-      let arr = [...arrList];
-      const findIndex = arr.findIndex((x) => x.id === item.id);
-      if (findIndex > -1) {
-        arr[findIndex].isSelected = true;
-        arr[findIndex].indexAdd = arrList.filter((x) => x.isSelected).length + 1;
-      }
-      setArrList(arr);
-    } catch (error) {
-    }
-  }, [arrList]);
-
-  const onPressItemHeader = useCallback((item) => {
-    try {
-      let arr = [...arrList];
-      const findIndex = arr.findIndex((x) => x.id === item.id)
-      if (findIndex > -1) { arr[findIndex].isSelected = false }
-      for (let index = 0; index < arr.sort((a, b) => {
-        if (a.indexAdd - b.indexAdd === 0) {
-          return a.id - b.id;
-        }
-        return a.indexAdd - b.indexAdd;
-      }).length; index++) {
-        if (arr[index].isSelected) {
-          arr[index].indexAdd = index + 1;
-        } else {
-          arr[index].indexAdd = 10000;
-        }
-      }
-      setArrList(arr);
-    } catch (error) {
-    }
-  }, [arrList]);
+  const scrollY = React.useRef(new Animated.Value(0)).current
+  const itemHeight = 100;
 
   return (
-    <SafeAreaView style={styles.container}>
-      <FlatList
-        data={arrList}
-        extraData={arrList}
-        ListHeaderComponent={() => {
-          return <View style={styles.headerContainer}>
-            {arrList.sort((a, b) => {
-              if (a.indexAdd - b.indexAdd === 0) {
-                return a.id - b.id;
-              }
-              return a.indexAdd - b.indexAdd;
-            }).map((item) => {
-              if (item.isSelected) {
-                return (
-                  <Animated.View
-                    entering={FadeIn.springify().duration(500).easing(Easing.ease)} exiting={FadeOut.springify().easing(Easing.ease)}>
-                    <TouchableOpacity style={styles.itemHeader} activeOpacity={0.8} onPress={() => { onPressItemHeader(item) }}>
-                      <Text style={{ textAlign: 'center' }}>{item.name}</Text>
-                    </TouchableOpacity>
-                  </Animated.View>
-                );
-              }
-              return <View style={{ height: 50, width: 50, borderRadius: 20, borderWidth: 1, margin: 8 }} />
-            })}
-          </View>
-        }}
-        keyExtractor={(item, index) => index.toString()}
-        renderItem={({ item }) => {
-          return <ItemAccess item={item} onPress={(item) => handleOnPressItem(item)} />
-        }}
-      />
-    </SafeAreaView >
+    <Animated.FlatList
+      data={data}
+      onScroll={Animated.event([{ nativeEvent: { contentOffset: { y: scrollY } } }], { useNativeDriver: true })}
+      keyExtractor={(item, index) => index.toString()}
+      showsVerticalScrollIndicator={false}
+      contentContainerStyle={{ paddingVertical: 48, }}
+      renderItem={({ item, index }) => {
+        let activeOpacity = 1;
+        let scaleX = 1;
+        let scaleY = 1;
+
+        if (index >= 5) {
+          const inputRange = [
+            itemHeight * (index - 4),
+            (itemHeight * (index - 2)),
+            (itemHeight * (index)),
+          ]
+          activeOpacity = scrollY.interpolate({
+            inputRange, outputRange: [0, 1, 1]
+          })
+
+          scaleX = scrollY.interpolate({
+            inputRange,
+            outputRange: [0, 1, 1],
+          })
+          scaleY = scrollY.interpolate({
+            inputRange,
+            outputRange: [-Dimensions.get('screen').width / 2, 0, 0]
+          })
+        }
+
+        return <View style={{
+          width: '100%', alignSelf: 'flex-start',
+          alightItem: 'flex-start',
+          justifyContent: 'flex-start',
+          backgroundColor: 'yellow'
+        }}>
+          <Animated.View
+            style={[styles.container, {
+              opacity: activeOpacity,
+              transform: [{ scaleX: scaleX, }, { translateX: scaleY }]
+            },]}>
+            <Image
+              source={{ uri: item?.image }}
+              style={{ aspectRatio: 80 / 80, borderRadius: 12 }}
+            />
+            <View style={styles.itemRight}>
+              <Text style={{ paddingVertical: 12, paddingHorizontal: 12, fontSize: 16 }}>{item?.title}</Text>
+              <Text style={{ paddingVertical: 12, paddingHorizontal: 12, fontSize: 16 }}>{item?.money}</Text>
+            </View>
+          </Animated.View>
+        </View>
+      }}
+    />
   );
 };
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
     backgroundColor: 'white',
-  },
-  headerContainer: {
+    marginVertical: 12,
     flexDirection: 'row',
-    flexWrap: 'wrap',
+    height: 100,
+    borderRadius: 12,
+    shadowColor: '#083070',
+    shadowOffset: {
+      width: 0,
+      height: 3,
+    },
+    shadowOpacity: 0.08,
+    shadowRadius: 6,
+    elevation: 2.5,
+    alightSelf: 'flex-start',
+    alightItem: 'flex-start',
+    justifyContent: 'flex-start',
+    width: '100%'
   },
-  itemHeader: {
-    height: 48,
-    width: 48,
-    margin: 12,
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: 'gray',
-    borderRadius: 8
+  image: {
+
   },
+  itemRight: {
+    flexShrink: 1
+  }
 });
 
 export default AccessWrapper;
