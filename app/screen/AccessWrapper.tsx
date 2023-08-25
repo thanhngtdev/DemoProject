@@ -1,6 +1,6 @@
 
 import React, { useRef } from 'react';
-import { Image, Dimensions, StyleSheet, Text, View, Animated, FlatList,SafeAreaView} from 'react-native';
+import { Image, Dimensions, StyleSheet, Text, View, Animated, FlatList, SafeAreaView } from 'react-native';
 
 const data = [
   {
@@ -74,92 +74,94 @@ const data = [
     money: '100000VND'
   },
 ]
+const itemHeight = 100;
 
 const AccessWrapper = () => {
 
   const scrollY = React.useRef(new Animated.Value(0)).current
-  const itemHeight = 100;
   const refFlatList = useRef<FlatList>(null)
 
   return (
     <SafeAreaView>
-    <Animated.FlatList
-      data={data}
-      ref={refFlatList}
-      onScroll={Animated.event([{ nativeEvent: { contentOffset: { y: scrollY } } }], { useNativeDriver: true })}
-      keyExtractor={(item, index) => index.toString()}
-      showsVerticalScrollIndicator={false}
-      onScrollEndDrag={eve => {
-        const heightItemOffset = `0.${(eve.nativeEvent.contentOffset.y / (itemHeight + 24)).toString().split('.')[1]
-          }`;
-        eve.nativeEvent.contentOffset.y + (itemHeight + 24) * (1 - Number(heightItemOffset))
-        if (eve.nativeEvent.contentOffset.y / itemHeight > 0 && eve.nativeEvent.velocity.y > 0) {
-          refFlatList.current?.scrollToOffset({
-            animated: true,
-            offset: eve.nativeEvent.contentOffset.y + itemHeight + 8,
-          });
-        }
-      }}
-      contentContainerStyle={{ paddingVertical: 48, }}
-      renderItem={({ item, index }) => {
-        let activeOpacity = 1;
-        let scaleX = 1;
-        let scaleY = 1;
+      <Animated.FlatList
+        data={data}
+        ref={refFlatList}
+        onScroll={Animated.event([{ nativeEvent: { contentOffset: { y: scrollY } } }], { useNativeDriver: true })}
+        keyExtractor={(item, index) => index.toString()}
+        showsVerticalScrollIndicator={false}
+        onScrollEndDrag={eve => {
+          const heightItemOffset = `0.${(eve.nativeEvent.contentOffset.y / (itemHeight + 24)).toString().split('.')[1]
+            }`;
+          eve.nativeEvent.contentOffset.y + (itemHeight + 24) * (1 - Number(heightItemOffset))
+          if (eve.nativeEvent.contentOffset.y / itemHeight > 0 && eve.nativeEvent.velocity.y > 0) {
+            refFlatList.current?.scrollToOffset({
+              animated: true,
+              offset: eve.nativeEvent.contentOffset.y + itemHeight + 8,
+            });
+          }
+        }}
+        contentContainerStyle={{ paddingVertical: 48, }}
+        renderItem={({ item, index }) => {
+          let activeOpacity = 1;
+          let scaleX = 1;
+          let scaleY = 1;
 
-        if (index >= 5) {
-          const inputRange = [
-            itemHeight * (index - 4),
-            (itemHeight * (index - 2)),
-            (itemHeight * (index)),
-          ]
-          activeOpacity = scrollY.interpolate({
-            inputRange, outputRange: [0, 1, 1]
-          })
+          if (index >= 5) {
+            const inputRange = [
+              itemHeight * (index - 4),
+              (itemHeight * (index - 2)),
+              (itemHeight * (index)),
+            ]
+            activeOpacity = scrollY.interpolate({
+              inputRange, outputRange: [0, 1, 1]
+            })
 
-          scaleX = scrollY.interpolate({
-            inputRange,
-            outputRange: [0, 1, 1],
-          })
-          scaleY = scrollY.interpolate({
-            inputRange,
-            outputRange: [-Dimensions.get('screen').width / 2, 0, 0]
-          })
-        }
+            scaleX = scrollY.interpolate({
+              inputRange,
+              outputRange: [0, 1, 1],
+            })
+            scaleY = scrollY.interpolate({
+              inputRange,
+              outputRange: [-Dimensions.get('screen').width / 2, 0, 0]
+            })
+          }
 
-        return <View style={{
-          width: '100%', alignSelf: 'flex-start',
-          alightItem: 'flex-start',
-          justifyContent: 'flex-start',
-          backgroundColor: 'yellow'
-        }}>
-          <Animated.View
-            style={[styles.container, {
-              opacity: activeOpacity,
-              transform: [{ scaleX: scaleX, }, { translateX: scaleY }]
-            },]}>
-            <Image
-              source={{ uri: item?.image }}
-              style={{ aspectRatio: 80 / 80, borderRadius: 12 }}
-            />
-            <View style={styles.itemRight}>
-              <Text style={{ paddingVertical: 12, paddingHorizontal: 12, fontSize: 16 }}>{item?.title}</Text>
-              <Text style={{ paddingVertical: 12, paddingHorizontal: 12, fontSize: 16 }}>{item?.money}</Text>
-            </View>
-          </Animated.View>
-        </View>
-      }}
-    />
-        </SafeAreaView>
+          return <View style={styles.container}>
+            <Animated.View
+              style={[styles.containerWrapper, {
+                opacity: activeOpacity,
+                transform: [{ scaleX: scaleX, }, { translateX: scaleY }]
+              },]}>
+              <Image
+                source={{ uri: item?.image }}
+                style={{ aspectRatio: 80 / 80, borderRadius: 12 }}
+              />
+              <View style={styles.itemRight}>
+                <Text style={{ paddingVertical: 12, paddingHorizontal: 12, fontSize: 16 }}>{item?.title}</Text>
+                <Text style={{ paddingVertical: 12, paddingHorizontal: 12, fontSize: 16 }}>{item?.money}</Text>
+              </View>
+            </Animated.View>
+          </View>
+        }}
+      />
+    </SafeAreaView>
 
   );
 };
 
 const styles = StyleSheet.create({
   container: {
+    width: '100%',
+    alignSelf: 'flex-start',
+    alightItem: 'flex-start',
+    justifyContent: 'flex-start',
+    backgroundColor: 'yellow'
+  },
+  containerWrapper: {
     backgroundColor: 'white',
     marginVertical: 12,
     flexDirection: 'row',
-    height: 100,
+    height: itemHeight,
     borderRadius: 12,
     shadowColor: '#083070',
     shadowOffset: {
